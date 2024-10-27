@@ -9,7 +9,8 @@ class TicTacToe:
         """
         self._board = self.Board()
         self._players = self._determine_players(computer, cpuPlayer)
-        self._curr_player = 0 #Corresponds to X
+        self._curr_player_index = 0 #Corresponds to X
+        self._curr_player = self._players[self._curr_player_index]
         self._finished = False
 
     def _determine_players(self, computer: bool, cpuPlayer: int) -> list:
@@ -43,7 +44,7 @@ class TicTacToe:
 
             state: a multidimensional array representation of the current board
             """
-            self.state = [[0] * 3 for i in range(3)]
+            self.state = [[' '] * 3 for i in range(3)]
         
         def mark(self, position: list, player: str) -> bool:
             """Marks a given position on the board with the player's corresponding symbol.
