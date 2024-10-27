@@ -52,3 +52,7 @@ class TicTacToe:
             Returns True if the given position is valid and successfully marked. Otherwise, returns False.
             """
             return True
+        
+        def __str__(self):
+            rows = ['|'.join(self.state[r]) for r in range(3)]
+            return '\n-----\n'.join(rows)
