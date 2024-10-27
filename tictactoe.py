@@ -11,7 +11,7 @@ class TicTacToe:
         self._players = self._determine_players(computer, cpuPlayer)
         self._curr_player_index = 0 #Corresponds to X
         self._curr_player = self._players[self._curr_player_index]
-        self._finished = False
+        self.finished = False
 
     def _determine_players(self, computer: bool, cpuPlayer: int) -> list:
         x, y = None
@@ -28,6 +28,15 @@ class TicTacToe:
         return [x, y]
 
     def play_round(self) -> None:
+        player = self._curr_player
+        marked = False
+
+        while not marked:
+            choice = player.make_choice()
+            marked = self._board.mark(choice, player.symbol)
+
+        self._curr_player_index = (self._curr_player_index + 1) % 2
+        self._curr_player = self._players[self._curr_player_index]
         return None
     
     class Player:
@@ -35,6 +44,9 @@ class TicTacToe:
         def __init__(self, symbol: str, computer: bool):
             self.symbol = symbol
             self.computer = computer
+
+        def make_choice() -> list:
+            pass
 
     class Board:
         """A 3x3 board for tic-tac-toe."""
