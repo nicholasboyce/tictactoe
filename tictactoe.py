@@ -51,8 +51,20 @@ class TicTacToe:
 
             Returns True if the given position is valid and successfully marked. Otherwise, returns False.
             """
+            row, col = position
+            if not self._is_valid(row, col):
+                return False
+            self.state[row][col] = player
             return True
         
+        def _is_valid(self, row: int, col: int) -> bool:
+            """Checks validity of given position to be marked."""
+            if row >= 3 or col >= 3:
+                return False
+            elif self.state[row][col] != ' ':
+                return False
+            return True
+
         def __str__(self):
             rows = ['|'.join(self.state[r]) for r in range(3)]
             return '\n-----\n'.join(rows)
