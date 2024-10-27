@@ -23,8 +23,8 @@ class TicTacToe:
                 x = self.Player('X', not computer)
                 o = self.Player('O', computer)
         else: #neither is computer
-            x = self.Player('X', computer)
-            o = self.Player('O', computer)
+            x = self.Player('X', False) #not using variable for sake of readability
+            o = self.Player('O', False)
         return [x, o]
     
     def _make_choice(self) -> list:
@@ -48,6 +48,7 @@ class TicTacToe:
         while not marked:
             choice = self._make_choice()
             marked = self._board.mark(choice, player.symbol)
+            print(self._board)
 
         self._curr_player_index = (self._curr_player_index + 1) % 2
         self._curr_player = self._players[self._curr_player_index]
