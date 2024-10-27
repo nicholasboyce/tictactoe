@@ -10,7 +10,7 @@ class TicTacToe:
         self._board = self.Board()
         self._players = self._determine_players(computer, cpuPlayer)
         self._curr_player_index = 0 #Corresponds to X
-        self._curr_player = self._players[self._curr_player_index]
+        self._curr_player : TicTacToe.Player = self._players[self._curr_player_index]
         self.finished = False
 
     def _determine_players(self, computer: bool, cpuPlayer: int) -> list:
@@ -38,6 +38,9 @@ class TicTacToe:
         self._curr_player_index = (self._curr_player_index + 1) % 2
         self._curr_player = self._players[self._curr_player_index]
         return None
+    
+    def display_result(self) -> None:
+        pass
     
     class Player:
 
@@ -80,3 +83,21 @@ class TicTacToe:
         def __str__(self):
             rows = ['|'.join(self.state[r]) for r in range(3)]
             return '\n-----\n'.join(rows)
+        
+if __name__ == '__main__':
+    print("Starting new TicTacToe game!\n")
+    play_against_computer = input("Play against the computer? Type Y for yes and N for no: ")
+    if play_against_computer.lower() == 'y':
+        computer_player = input("Should the computer play first (X) or second (O)?: ")
+        response = computer_player.lower()
+        if response == 'x' or response == 'first':
+            game = TicTacToe(True, 1)
+        else:
+            game = TicTacToe(True, 2)
+    else:
+        game = TicTacToe(False, 0)
+
+    while not game.finished:
+        game.play_round()
+
+    game.display_result()
