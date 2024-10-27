@@ -14,25 +14,39 @@ class TicTacToe:
         self.finished = False
 
     def _determine_players(self, computer: bool, cpuPlayer: int) -> list:
-        x, y = None
+        x, o = None, None
         if computer:
             if cpuPlayer - 1: #i.e. player X is the computer
                 x = self.Player('X', computer)
-                y = self.Player('Y', not computer)
+                o = self.Player('O', not computer)
             else:
                 x = self.Player('X', not computer)
-                y = self.Player('Y', computer)
+                o = self.Player('O', computer)
         else: #neither is computer
-            x = self.Player('X', not computer)
-            y = self.Player('Y', not computer)
-        return [x, y]
+            x = self.Player('X', computer)
+            o = self.Player('O', computer)
+        return [x, o]
+    
+    def _make_choice(self) -> list:
+        player = self._curr_player
+        print(f'Player {player.symbol} is deciding...')
+        if not player.computer:
+            row = int(input("Which (zero-indexed) row? "))
+            col = int(input("Which (zero-indexed) column? "))
+            print("")
+            return [row, col]
+        else:
+            return self._check_tree(tuple(self._board.state))
+    
+    def _check_tree(self, board: tuple) -> list:
+        pass
 
     def play_round(self) -> None:
         player = self._curr_player
         marked = False
 
         while not marked:
-            choice = player.make_choice()
+            choice = self._make_choice()
             marked = self._board.mark(choice, player.symbol)
 
         self._curr_player_index = (self._curr_player_index + 1) % 2
@@ -87,6 +101,7 @@ class TicTacToe:
 if __name__ == '__main__':
     print("Starting new TicTacToe game!\n")
     play_against_computer = input("Play against the computer? Type Y for yes and N for no: ")
+    print("")
     if play_against_computer.lower() == 'y':
         computer_player = input("Should the computer play first (X) or second (O)?: ")
         response = computer_player.lower()
