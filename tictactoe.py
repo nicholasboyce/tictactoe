@@ -50,12 +50,21 @@ class TicTacToe:
             marked = self._board.mark(choice, player.symbol)
             print(self._board)
 
-        self._curr_player_index = (self._curr_player_index + 1) % 2
-        self._curr_player = self._players[self._curr_player_index]
+        self.finished = self._board.is_finished()
+
+        if not self.finished:
+            self._curr_player_index = (self._curr_player_index + 1) % 2
+            self._curr_player = self._players[self._curr_player_index]
+
         return None
     
     def display_result(self) -> None:
-        pass
+        winner = self._board.game_winner()
+
+        if winner:
+            print(f'Player {winner} has won!')
+        else:
+            print('It was a draw!')
     
     class Player:
 
@@ -94,6 +103,37 @@ class TicTacToe:
             elif self.state[row][col] != ' ':
                 return False
             return True
+        
+        def is_finished(self) -> bool:
+            """Checks whether or not the game is finished."""
+            if self.game_winner() != None:
+                return True
+            
+            for row in range(3):
+                for col in range(3):
+                    if self.state[row][col] == ' ':
+                        return False
+                    
+            return True
+
+        def game_winner(self) -> str | None:
+            """Returns the winner of the current board."""
+            winner = None
+            # check all rows
+            for row in range(3):
+                if (self.state[row][0] == self.state[row][1] == self.state[row][2]) and (self.state[row][0] != ' '):
+                    winner = self.state[row][0]
+
+            #check all cols
+            for col in range(3):
+                if (self.state[0][col] == self.state[1][col] == self.state[2][col]) and (self.state[0][col] != ' '):
+                    winner = self.state[0][col]
+
+            #check diagonals
+            if ((self.state[0][0] == self.state[1][1] == self.state[2][2]) or (self.state[0][2] == self.state[1][1] == self.state[2][0])) and (self.state[1][1] != ' '):
+                winner = self.state[1][1]
+            
+            return winner
 
         def __str__(self):
             rows = ['|'.join(self.state[r]) for r in range(3)]
