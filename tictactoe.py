@@ -1,3 +1,5 @@
+import time
+
 class TicTacToe:
     """A tic-tac-toe game."""
 
@@ -50,7 +52,14 @@ class TicTacToe:
             marked = self._board.mark(choice, player.symbol)
             print(self._board)
 
+        #start = time.perf_counter()
         self.finished = self._board.is_finished()
+        #end = time.perf_counter()
+
+        #time_elapsed = (end-start) * 1000
+
+        #print(f'Elapsed time in seconds: {time_elapsed}')
+
 
         if not self.finished:
             self._curr_player_index = (self._curr_player_index + 1) % 2
