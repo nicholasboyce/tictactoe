@@ -106,7 +106,7 @@ class TicTacToe:
         
         def is_finished(self) -> bool:
             """Checks whether or not the game is finished."""
-            if self.game_winner() != None:
+            if self.game_winner():
                 return True
             
             for row in range(3):
@@ -116,9 +116,9 @@ class TicTacToe:
                     
             return True
 
-        def game_winner(self) -> str | None:
+        def game_winner(self) -> str:
             """Returns the winner of the current board."""
-            winner = None
+            winner = ''
             # check all rows
             for row in range(3):
                 if (self.state[row][0] == self.state[row][1] == self.state[row][2]) and (self.state[row][0] != ' '):
