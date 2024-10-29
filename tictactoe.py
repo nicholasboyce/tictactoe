@@ -1,5 +1,6 @@
 import time
 from sys import maxsize
+from collections import deque
 
 class TicTacToe:
     """A tic-tac-toe game."""
@@ -41,7 +42,7 @@ class TicTacToe:
         else:
             return self._return_best_choice(self._board.state)
         
-    def _minimax(self, curr_board : 'Board', available: set[tuple[int]], player: str) -> int:
+    def _minimax(self, curr_board : 'Board', available: deque[tuple[int]], player: str) -> int:
         """Implemented as a backtracking postorder algorithm traversing the implicit tree of choices given an initial board state.
         """
         if curr_board.is_finished():
@@ -56,11 +57,10 @@ class TicTacToe:
         # check whether to maximize value (X) or minimize value (O)
         optimal = maxsize * -1 if player == 'X' else maxsize
         
-        for spot in available:
+        for i in range(len(available)):
+            spot = available.popleft()
             #mark the board
             curr_board.mark(spot, player)
-            #remove spot temporarily from available set
-            available.remove(spot)
             # return and store the value of the marked board, associate it with the position
             next_player = 'O' if player == 'X' else 'X'
             value = self._minimax(curr_board, available, next_player)
@@ -70,26 +70,26 @@ class TicTacToe:
                 optimal = min(optimal, value)
             # unmark the board & restore availability
             curr_board._unmark(spot)
-            available.add(spot)
+            available.append(spot)
 
         return optimal
 
-
-        
     
     def _return_best_choice(self, board: list[list[str]]) -> list:
         player = self._curr_player
         # find all possible moves from current board
-        available = {(i // 3, i % 3) for i in range(9) if board[i // 3][i % 3] == ' '}
+        available = deque([(i // 3, i % 3) for i in range(9) if board[i // 3][i % 3] == ' '])
 
         # check whether to maximize value (X) or minimize value (O)
         optimal = (maxsize * -1, None) if player.symbol == 'X' else (maxsize, None)
 
         # for each available position mark the board
-        for spot in available:
+        for i in range(len(available)):
+            spot = available.popleft()
             self._board.mark(spot, player.symbol)
             # return and store the value of the marked board, associate it with the position
-            value = self._minimax(self._board, available, player.symbol)
+            next_player = 'O' if player.symbol == 'X' else 'X'
+            value = self._minimax(self._board, available, next_player)
             if player.symbol == 'X':
                 if value > optimal[0]:
                     optimal = (value, spot)
@@ -98,6 +98,7 @@ class TicTacToe:
                     optimal = (value, spot)
             # unmark the board & move on
             self._board._unmark(spot)
+            available.append(spot)
 
         # return the optimal position
         return optimal[1]
