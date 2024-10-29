@@ -38,9 +38,15 @@ class TicTacToe:
             print("")
             return [row, col]
         else:
-            return self._return_best_choice(tuple(self._board.state))
+            return self._return_best_choice(self._board.state)
     
-    def _return_best_choice(self, board: tuple) -> list:
+    def _return_best_choice(self, board: list[list[str]]) -> list:
+        # find all possible moves from current board
+        # for each available position mark the board
+        # return and store the value of the marked board, associate it with the position
+        # unmark the board
+        # move on to the next position
+        # return the optimal position
         pass
 
     def play_round(self) -> None:
@@ -103,6 +109,17 @@ class TicTacToe:
             if not self._is_valid(row, col):
                 return False
             self.state[row][col] = player
+            return True
+        
+        def _unmark(self, position: list) -> bool:
+            """Unmarks a given position on the board with a string representing an available spot.
+
+            Used primarily for backtracking purposes.
+            """
+            row, col = position
+            if row >= 3 or col >= 3:
+                return False
+            self.state[row][col] = ' '
             return True
         
         def _is_valid(self, row: int, col: int) -> bool:
