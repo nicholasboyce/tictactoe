@@ -1,4 +1,5 @@
 import time
+from sys import maxsize
 
 class TicTacToe:
     """A tic-tac-toe game."""
@@ -39,15 +40,34 @@ class TicTacToe:
             return [row, col]
         else:
             return self._return_best_choice(self._board.state)
+        
+    def _minimax(self):
+        pass
     
     def _return_best_choice(self, board: list[list[str]]) -> list:
+        player = self._curr_player
         # find all possible moves from current board
+        available = {[i // 3, i % 3] for i in range(9) if board[i // 3][i % 3] == ' '}
+
+        # check whether to maximize value (X) or minimize value (O)
+        optimal = (maxsize * -1, None) if player.symbol == 'X' else (maxsize, None)
+
         # for each available position mark the board
-        # return and store the value of the marked board, associate it with the position
-        # unmark the board
-        # move on to the next position
+        for spot in available:
+            self._board.mark(spot, player.symbol)
+            # return and store the value of the marked board, associate it with the position
+            value = self._minimax(self._board, available)
+            if player.symbol == 'X':
+                if value > optimal[0]:
+                    optimal = (value, spot)
+            else:
+                if value < optimal[0]:
+                    optimal = (value, spot)
+            # unmark the board & move on
+            self._board._unmark(spot)
+            
         # return the optimal position
-        pass
+        return optimal[1]
 
     def play_round(self) -> None:
         player = self._curr_player
