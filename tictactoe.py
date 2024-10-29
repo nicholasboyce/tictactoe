@@ -19,7 +19,7 @@ class TicTacToe:
     def _determine_players(self, computer: bool, cpuPlayer: int) -> list:
         x, o = None, None
         if computer:
-            if cpuPlayer - 1: #i.e. player X is the computer
+            if cpuPlayer == 1: #i.e. player X is the computer
                 x = self.Player('X', computer)
                 o = self.Player('O', not computer)
             else:
@@ -41,7 +41,7 @@ class TicTacToe:
         else:
             return self._return_best_choice(self._board.state)
         
-    def _minimax(self, curr_board : 'Board', available: set[list[int]], player: str) -> int:
+    def _minimax(self, curr_board : 'Board', available: set[tuple[int]], player: str) -> int:
         """Implemented as a backtracking postorder algorithm traversing the implicit tree of choices given an initial board state.
         """
         if curr_board.is_finished():
@@ -80,7 +80,7 @@ class TicTacToe:
     def _return_best_choice(self, board: list[list[str]]) -> list:
         player = self._curr_player
         # find all possible moves from current board
-        available = {[i // 3, i % 3] for i in range(9) if board[i // 3][i % 3] == ' '}
+        available = {(i // 3, i % 3) for i in range(9) if board[i // 3][i % 3] == ' '}
 
         # check whether to maximize value (X) or minimize value (O)
         optimal = (maxsize * -1, None) if player.symbol == 'X' else (maxsize, None)
@@ -225,7 +225,7 @@ if __name__ == '__main__':
     if play_against_computer.lower() == 'y':
         computer_player = input("Should the computer play first (X) or second (O)?: ")
         response = computer_player.lower()
-        if response == 'x' or response == 'first':
+        if response == 'x' or response == 'first' or response == '1':
             game = TicTacToe(True, 1)
         else:
             game = TicTacToe(True, 2)
