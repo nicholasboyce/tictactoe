@@ -38,9 +38,9 @@ class TicTacToe:
             print("")
             return [row, col]
         else:
-            return self._check_tree(tuple(self._board.state))
+            return self._return_best_choice(tuple(self._board.state))
     
-    def _check_tree(self, board: tuple) -> list:
+    def _return_best_choice(self, board: tuple) -> list:
         pass
 
     def play_round(self) -> None:
