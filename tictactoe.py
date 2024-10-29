@@ -41,8 +41,41 @@ class TicTacToe:
         else:
             return self._return_best_choice(self._board.state)
         
-    def _minimax(self):
-        pass
+    def _minimax(self, curr_board : 'Board', available: set[list[int]], player: str) -> int:
+        """Implemented as a backtracking postorder algorithm traversing the implicit tree of choices given an initial board state.
+        """
+        if curr_board.is_finished():
+            winner = curr_board.game_winner()
+            if winner == 'X':
+                return 1
+            elif winner == 'O':
+                return -1
+            else:
+                return 0
+        
+        # check whether to maximize value (X) or minimize value (O)
+        optimal = maxsize * -1 if player == 'X' else maxsize
+        
+        for spot in available:
+            #mark the board
+            curr_board.mark(spot, player)
+            #remove spot temporarily from available set
+            available.remove(spot)
+            # return and store the value of the marked board, associate it with the position
+            next_player = 'O' if player == 'X' else 'X'
+            value = self._minimax(curr_board, available, next_player)
+            if player == 'X':
+                optimal = max(optimal, value)
+            else:
+                optimal = min(optimal, value)
+            # unmark the board & restore availability
+            curr_board._unmark(spot)
+            available.add(spot)
+
+        return optimal
+
+
+        
     
     def _return_best_choice(self, board: list[list[str]]) -> list:
         player = self._curr_player
@@ -56,7 +89,7 @@ class TicTacToe:
         for spot in available:
             self._board.mark(spot, player.symbol)
             # return and store the value of the marked board, associate it with the position
-            value = self._minimax(self._board, available)
+            value = self._minimax(self._board, available, player.symbol)
             if player.symbol == 'X':
                 if value > optimal[0]:
                     optimal = (value, spot)
@@ -65,7 +98,7 @@ class TicTacToe:
                     optimal = (value, spot)
             # unmark the board & move on
             self._board._unmark(spot)
-            
+
         # return the optimal position
         return optimal[1]
 
