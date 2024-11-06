@@ -1,6 +1,5 @@
 import time
 from sys import maxsize
-from collections import deque
 
 class TicTacToe:
     """A tic-tac-toe game."""
@@ -41,7 +40,7 @@ class TicTacToe:
             return [row, col]
         else:
             start = time.perf_counter()
-            choice = self._return_best_choice(self._board.state)
+            choice = self._return_best_choice()
             end = time.perf_counter()
             time_elapsed = (end-start) * 1000
 
@@ -87,14 +86,15 @@ class TicTacToe:
         return optimal
 
     
-    def _return_best_choice(self, board: list[list[str]]) -> list:
+    def _return_best_choice(self) -> list:
         player = self._curr_player
         # find all possible moves from current board
-        available = [(i // 3, i % 3) for i in range(9) if board[i // 3][i % 3] == ' ']
-        used = [0] * len(available)
+        available = self._board.available
+        used = self._board.used
 
-        alpha = maxsize * -1
-        beta = maxsize
+        alpha = maxsize * -1 #best we've seen so far in this subtree as we've explored it for X
+        beta = maxsize #ditto above for O
+
         # check whether to maximize value (X) or minimize value (O)
         optimal = (maxsize * -1, None) if player.symbol == 'X' else (maxsize, None)
 
@@ -171,6 +171,8 @@ class TicTacToe:
             state: a multidimensional array representation of the current board
             """
             self.state = [[' '] * 3 for i in range(3)]
+            self.available = [(i // 3, i % 3) for i in range(9) if self.state[i // 3][i % 3] == ' ']
+            self.used = [0] * len(self.available)
         
         def mark(self, position: list, player: str) -> bool:
             """Marks a given position on the board with the player's corresponding symbol.
