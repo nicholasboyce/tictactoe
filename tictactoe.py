@@ -40,7 +40,13 @@ class TicTacToe:
             print("")
             return [row, col]
         else:
-            return self._return_best_choice(self._board.state)
+            start = time.perf_counter()
+            choice = self._return_best_choice(self._board.state)
+            end = time.perf_counter()
+            time_elapsed = (end-start) * 1000
+
+            print(f'Elapsed time in milliseconds: {time_elapsed}')
+            return choice
         
     def _minimax(self, curr_board : 'Board', available: deque[tuple[int]], player: str) -> int:
         """Implemented as a backtracking postorder algorithm traversing the implicit tree of choices given an initial board state.
@@ -140,9 +146,6 @@ class TicTacToe:
         def __init__(self, symbol: str, computer: bool):
             self.symbol = symbol
             self.computer = computer
-
-        def make_choice() -> list:
-            pass
 
     class Board:
         """A 3x3 board for tic-tac-toe."""
