@@ -48,7 +48,7 @@ class TicTacToe:
             print(f'Elapsed time in milliseconds: {time_elapsed}')
             return choice
         
-    def _minimax(self, curr_board : 'Board', available: deque[tuple[int]], player: str) -> int:
+    def _minimax(self, curr_board : 'Board', available: list[tuple[int]], used: list[int], player: str) -> int:
         """Implemented as a backtracking postorder algorithm traversing the implicit tree of choices given an initial board state.
         """
         if curr_board.is_finished():
@@ -64,19 +64,21 @@ class TicTacToe:
         optimal = maxsize * -1 if player == 'X' else maxsize
         
         for i in range(len(available)):
-            spot = available.popleft()
-            #mark the board
-            curr_board.mark(spot, player)
-            # return and store the value of the marked board, associate it with the position
-            next_player = 'O' if player == 'X' else 'X'
-            value = self._minimax(curr_board, available, next_player)
-            if player == 'X':
-                optimal = max(optimal, value)
-            else:
-                optimal = min(optimal, value)
-            # unmark the board & restore availability
-            curr_board._unmark(spot)
-            available.append(spot)
+            if not used[i]:
+                spot = available[i]
+                used[i] = 1
+                #mark the board
+                curr_board.mark(spot, player)
+                # return and store the value of the marked board, associate it with the position
+                next_player = 'O' if player == 'X' else 'X'
+                value = self._minimax(curr_board, available, used, next_player)
+                if player == 'X':
+                    optimal = max(optimal, value)
+                else:
+                    optimal = min(optimal, value)
+                # unmark the board & restore availability
+                curr_board._unmark(spot)
+                used[i] = 0
 
         return optimal
 
@@ -84,27 +86,30 @@ class TicTacToe:
     def _return_best_choice(self, board: list[list[str]]) -> list:
         player = self._curr_player
         # find all possible moves from current board
-        available = deque([(i // 3, i % 3) for i in range(9) if board[i // 3][i % 3] == ' '])
+        available = [(i // 3, i % 3) for i in range(9) if board[i // 3][i % 3] == ' ']
+        used = [0] * len(available)
 
         # check whether to maximize value (X) or minimize value (O)
         optimal = (maxsize * -1, None) if player.symbol == 'X' else (maxsize, None)
 
         # for each available position mark the board
         for i in range(len(available)):
-            spot = available.popleft()
-            self._board.mark(spot, player.symbol)
-            # return and store the value of the marked board, associate it with the position
-            next_player = 'O' if player.symbol == 'X' else 'X'
-            value = self._minimax(self._board, available, next_player)
-            if player.symbol == 'X':
-                if value > optimal[0]:
-                    optimal = (value, spot)
-            else:
-                if value < optimal[0]:
-                    optimal = (value, spot)
-            # unmark the board & move on
-            self._board._unmark(spot)
-            available.append(spot)
+            if not used[i]:
+                spot = available[i]
+                self._board.mark(spot, player.symbol)
+                used[i] = 1
+                # return and store the value of the marked board, associate it with the position
+                next_player = 'O' if player.symbol == 'X' else 'X'
+                value = self._minimax(self._board, available, used, next_player)
+                if player.symbol == 'X':
+                    if value > optimal[0]:
+                        optimal = (value, spot)
+                else:
+                    if value < optimal[0]:
+                        optimal = (value, spot)
+                # unmark the board & move on
+                used[i] = 0
+                self._board._unmark(spot)
 
         # return the optimal position
         return optimal[1]
